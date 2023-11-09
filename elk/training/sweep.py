@@ -1,4 +1,4 @@
-from dataclasses import InitVar, dataclass, replace
+from dataclasses import InitVar, dataclass, replace, field
 
 import numpy as np
 import torch
@@ -53,10 +53,11 @@ class Sweep:
     name: str | None = None
 
     # A bit of a hack to add all the command line arguments from Elicit
-    run_template: Elicit = Elicit(
-        data=Extract(
-            model="<placeholder>",
-            datasets=("<placeholder>",),
+    run_template: Elicit = field(default_factory=lambda: Elicit(
+            data=Extract(
+                model="<placeholder>",
+                datasets=("<placeholder>",),
+            )
         )
     )
 
