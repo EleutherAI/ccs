@@ -21,6 +21,7 @@ def load_prompts(
     seed: int = 42,
     split_type: Literal["train", "val"] = "train",
     template_path: str | None = None,
+    balance: bool = True,
     rank: int = 0,
     world_size: int = 1,
 ) -> Iterator[dict]:
@@ -45,7 +46,14 @@ def load_prompts(
     ds_dict = assert_type(dict, load_dataset(ds_name, config_name or None))
     split_name = select_split(ds_dict, split_type)
 
-    ds = assert_type(Dataset, ds_dict[split_name].shuffle(seed=seed))
+    ds = assert_type(Dataset, ds_dict[split_name])
+
+    if "row_id" not in ds.column_names:
+        ds = ds.add_column("row_id", range(len(ds)))  # type: ignore
+    else:
+        print("Found `row_id` column, using it as the example id")
+    ds = ds.shuffle(seed=seed)
+
     if world_size > 1:
         ds = ds.shard(world_size, rank)
 
@@ -89,14 +97,14 @@ def load_prompts(
     else:
         fewshot_iter = None
 
-    if label_column in ds.features:
+    if label_column in ds.features and balance:
         ds = BalancedSampler(
             ds.to_iterable_dataset(),
             set(label_choices),
             label_col=label_column,
         )
     else:
-        if rank == 0:
+        if rank == 0 and balance:
             print("No label column found, not balancing")
         ds = ds.to_iterable_dataset()
 
@@ -123,7 +131,7 @@ def _convert_to_prompts(
 ) -> dict[str, Any]:
     """Prompt-generating function to pass to `IterableDataset.map`."""
     prompts = []
-    templates = list(prompter.templates.values())
+    templates = sorted(list(prompter.templates.values()), key=lambda t: t.name)
 
     def qa_cat(q: str, a: str) -> str:
         # if the jinja template already adds whitespace, don't add more
@@ -182,6 +190,7 @@ def _convert_to_prompts(
     # If they're not, we need to convert them with index(). label_choices is guaranteed
     # to be sorted (see above).
     return dict(
+        row_id=example["row_id"],
         label=label_choices.index(label),
         prompts=prompts,
         template_names=[template.name for template in templates],

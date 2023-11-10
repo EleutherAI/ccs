@@ -78,6 +78,9 @@ class Extract(Serializable):
     """The number of prompt templates to use for each example. If -1, all available
     templates are used."""
 
+    balance: bool = True
+    """Whether to balance the number of examples per class."""
+
     layers: tuple[int, ...] = ()
     """Indices of layers to extract hidden states from. We ignore the embedding,
     have only the output of the transformer layers."""
@@ -189,6 +192,7 @@ def extract_hiddens(
         num_shots=cfg.num_shots,
         split_type=split_type,
         template_path=cfg.template_path,
+        balance=cfg.balance,
         rank=rank,
         world_size=world_size,
         seed=cfg.seed,
@@ -229,7 +233,7 @@ def extract_hiddens(
             )
             for layer_idx in layer_indices
         }
-        lm_logits = torch.empty(
+        lm_log_odds = torch.empty(
             num_variants,
             num_choices,
             device=device,
@@ -289,7 +293,12 @@ def extract_hiddens(
 
                 # Compute the log probability of the answer tokens if available
                 if has_lm_preds:
-                    lm_logits[i, j] = -assert_type(Tensor, outputs.loss)
+                    logprob = -assert_type(Tensor, outputs.loss)
+                    # Convert logprob to logodds to be consistent with reporters
+                    # Because we went through logprobs, logodds corresponding to
+                    # probs near 1 will be somewhat imprecise
+                    # log(p/(1-p)) = log(p) - log(1-p) = logp - log(1 - exp(logp))
+                    lm_log_odds[i, j] = logprob - torch.log1p(-logprob.exp())
 
                 hiddens = (
                     outputs.get("decoder_hidden_states") or outputs["hidden_states"]
@@ -323,14 +332,16 @@ def extract_hiddens(
             continue
 
         out_record: dict[str, Any] = dict(
+            row_id=example["row_id"],
             label=example["label"],
             variant_ids=example["template_names"],
-            text_questions=text_questions,
+            texts=text_questions,
             **hidden_dict,
         )
         if has_lm_preds:
-            out_record["model_logits"] = lm_logits.log_softmax(dim=-1)
+            out_record["lm_log_odds"] = lm_log_odds.log_softmax(dim=-1)
 
+        assert out_record["variant_ids"] == sorted(out_record["variant_ids"])
         num_yielded += 1
         yield out_record
 
@@ -375,12 +386,13 @@ def hidden_features(cfg: Extract) -> tuple[DatasetInfo, Features]:
         for layer in layer_indices
     }
     other_cols = {
+        "row_id": Value(dtype="int64"),
         "variant_ids": Sequence(
             Value(dtype="string"),
             length=num_variants,
         ),
         "label": Value(dtype="int64"),
-        "text_questions": Sequence(
+        "texts": Sequence(
             Sequence(
                 Value(dtype="string"),
             ),
@@ -390,7 +402,7 @@ def hidden_features(cfg: Extract) -> tuple[DatasetInfo, Features]:
 
     # Only add model_logits if the model is an autoregressive model
     if is_autoregressive(model_cfg, not cfg.use_encoder_states):
-        other_cols["model_logits"] = Array2D(
+        other_cols["lm_log_odds"] = Array2D(
             shape=(num_variants, num_classes),
             dtype="float32",
         )
