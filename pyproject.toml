@@ -12,6 +12,8 @@ license = { text = "MIT License" }
 dependencies = [
     # Allows us to use device_map in from_pretrained. Also needed for 8bit
     "accelerate",
+    # Already a dependency of datasets, but newer versions introduce breaking changes
+    "pyarrow==12.0.0",
     # For pseudolabel and prompt normalization. We're picky about the version because
     # the package isn't guaranteed to be stable yet.
     "concept-erasure==0.1.0",
