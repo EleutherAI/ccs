@@ -3,7 +3,7 @@ import pytest
 import torch
 from scipy.sparse.linalg import eigsh
 
-from elk.truncated_eigh import truncated_eigh
+from ccs.truncated_eigh import truncated_eigh
 
 
 def random_symmetric_matrix(n: int, k: int) -> torch.Tensor:

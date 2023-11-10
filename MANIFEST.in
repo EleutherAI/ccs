@@ -1,2 +1,2 @@
-recursive-include elk/promptsource/templates *
-recursive-include elk/resources *
+recursive-include ccs/promptsource/templates *
+recursive-include ccs/resources *

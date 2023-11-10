@@ -1,10 +1,6 @@
 *.csv
 *.npy
-elk/models/*
-elk/trained/*
-nohup.out
 .idea
-*.pkl
 
 # scripts for experiments in progress
 my_*.sh

@@ -8,14 +8,14 @@ from pathlib import Path
 
 def sweeps_dir() -> Path:
     """Return the directory where sweeps are stored."""
-    return elk_reporter_dir() / "sweeps"
+    return ccs_reporter_dir() / "sweeps"
 
 
-def elk_reporter_dir() -> Path:
+def ccs_reporter_dir() -> Path:
     """Return the directory where reporter checkpoints and logs are stored."""
-    env_dir = os.environ.get("ELK_DIR", None)
+    env_dir = os.environ.get("CCS_DIR", None)
     if env_dir is None:
-        log_dir = Path.home() / "elk-reporters"
+        log_dir = Path.home() / "ccs-reporters"
     else:
         log_dir = Path(env_dir)
 
@@ -47,4 +47,4 @@ def memorably_named_dir(parent: Path):
 
 def transfer_eval_directory(source: str) -> Path:
     """Return the directory where transfer evals are stored."""
-    return elk_reporter_dir() / source / "transfer_eval"
+    return ccs_reporter_dir() / source / "transfer_eval"

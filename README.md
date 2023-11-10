@@ -21,16 +21,16 @@ Our code is based on [PyTorch](http://pytorch.org)
 and [Huggingface Transformers](https://huggingface.co/docs/transformers/index). We test the code on Python 3.10 and
 3.11.
 
-First install the package with `pip install -e .` in the root directory, or `pip install eleuther-elk` to install from PyPi. Use `pip install -e .[dev]` if you'd like to contribute to the project (see **Development** section below). This should install all the necessary dependencies.
+First install the package with `pip install -e .` in the root directory. Use `pip install -e .[dev]` if you'd like to contribute to the project (see **Development** section below). This should install all the necessary dependencies.
 
 To fit reporters for the HuggingFace model `model` and dataset `dataset`, just run:
 
 ```bash
-elk elicit microsoft/deberta-v2-xxlarge-mnli imdb
+ccs elicit microsoft/deberta-v2-xxlarge-mnli imdb
 ```
 
 This will automatically download the model and dataset, run the model and extract the relevant representations if they
-aren't cached on disk, fit reporters on them, and save the reporter checkpoints to the `elk-reporters` folder in your
+aren't cached on disk, fit reporters on them, and save the reporter checkpoints to the `ccs-reporters` folder in your
 home directory. It will also evaluate the reporter classification performance on a held out test set and save it to a
 CSV file in the same folder.
 
@@ -38,35 +38,35 @@ The following will generate a CCS (Contrast Consistent Search) reporter instead 
 default.
 
 ```bash
-elk elicit microsoft/deberta-v2-xxlarge-mnli imdb --net ccs
+ccs elicit microsoft/deberta-v2-xxlarge-mnli imdb --net ccs
 ```
 
 The following command will evaluate the probe from the run naughty-northcutt on the hidden states extracted from the
 model deberta-v2-xxlarge-mnli for the imdb dataset. It will result in an `eval.csv` and `cfg.yaml` file, which are
-stored under a subfolder in `elk-reporters/naughty-northcutt/transfer_eval`.
+stored under a subfolder in `ccs-reporters/naughty-northcutt/transfer_eval`.
 
 ```bash
-elk eval naughty-northcutt microsoft/deberta-v2-xxlarge-mnli imdb
+ccs eval naughty-northcutt microsoft/deberta-v2-xxlarge-mnli imdb
 ```
 
 The following runs `elicit` on the Cartesian product of the listed models and datasets, storing it in a special folder
-ELK_DIR/sweeps/<memorable_name>. Moreover, `--add_pooled` adds an additional dataset that pools all of the datasets
+CCS_DIR/sweeps/<memorable_name>. Moreover, `--add_pooled` adds an additional dataset that pools all of the datasets
 together. You can also add a `--visualize` flag to visualize the results of the sweep.
 
 ```bash
-elk sweep --models gpt2-{medium,large,xl} --datasets imdb amazon_polarity --add_pooled
+ccs sweep --models gpt2-{medium,large,xl} --datasets imdb amazon_polarity --add_pooled
 ```
 
-If you just do `elk plot`, it will plot the results from the most recent sweep.
+If you just do `ccs plot`, it will plot the results from the most recent sweep.
 If you want to plot a specific sweep, you can do so with:
 
 ```bash
-elk plot {sweep_name}
+ccs plot {sweep_name}
 ```
 
 ## Caching
 
-The hidden states resulting from `elk elicit` are cached as a HuggingFace dataset to avoid having to recompute them
+The hidden states resulting from `ccs elicit` are cached as a HuggingFace dataset to avoid having to recompute them
 every time we want to train a probe. The cache is stored in the same place as all other HuggingFace datasets, which is
 usually `~/.cache/huggingface/datasets`.
 
@@ -81,7 +81,7 @@ Use `pip install pre-commit && pre-commit install` in the root folder before you
 https://img.shields.io/static/v1?label=Remote%20-%20Containers&message=Open&color=blue&logo=visualstudiocode
 )
 ](
-https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/EleutherAI/elk
+https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/EleutherAI/ccs
 )
 
 ### Run tests

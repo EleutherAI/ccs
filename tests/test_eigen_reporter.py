@@ -1,7 +1,7 @@
 import torch
 
-from elk.training import EigenFitter, EigenFitterConfig
-from elk.utils import batch_cov, cov_mean_fused
+from ccs.training import EigenFitter, EigenFitterConfig
+from ccs.utils import batch_cov, cov_mean_fused
 
 
 def test_eigen_reporter():

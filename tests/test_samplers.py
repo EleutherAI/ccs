@@ -4,8 +4,8 @@ from random import Random
 
 from datasets import IterableDataset, load_dataset
 
-from elk.extraction import BalancedSampler, FewShotSampler
-from elk.utils import assert_type, infer_label_column
+from ccs.extraction import BalancedSampler, FewShotSampler
+from ccs.utils import assert_type, infer_label_column
 
 
 def test_output_batches_are_balanced():
