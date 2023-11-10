@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass
-from typing import Literal
+from typing import Any, Literal
 
 import torch
 from einops import repeat
@@ -26,7 +26,7 @@ class EvalResult:
     cal_thresh: float | None
     """The threshold used to compute the calibrated accuracy."""
 
-    def to_dict(self, prefix: str = "") -> dict[str, float]:
+    def to_dict(self, prefix: str = "") -> dict[str, Any]:
         """Convert the result to a dictionary."""
         acc_dict = {f"{prefix}acc_{k}": v for k, v in asdict(self.accuracy).items()}
         cal_acc_dict = (

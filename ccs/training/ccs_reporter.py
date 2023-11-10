@@ -38,7 +38,7 @@ class CcsConfig(FitterConfig):
     loss: list[str] = field(default_factory=lambda: ["ccs"])
     """
     The loss function to use. list of strings, each of the form "coef*name", where coef
-    is a float and name is one of the keys in `elk.training.losses.LOSSES`.
+    is a float and name is one of the keys in `ccs.training.losses.LOSSES`.
     Example: `--loss 1.0*consistency_squared 0.5*prompt_var` corresponds to the loss
     function 1.0*consistency_squared + 0.5*prompt_var.
     """

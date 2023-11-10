@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from torch.distributions.normal import Normal
 
-from elk.metrics import accuracy_ci, roc_auc
+from ccs.metrics import accuracy_ci, roc_auc
 
 
 def test_auroc_and_acc():

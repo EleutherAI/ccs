@@ -6,7 +6,7 @@ import pandas as pd
 import torch
 from simple_parsing.helpers import field
 
-from ..files import elk_reporter_dir
+from ..files import ccs_reporter_dir
 from ..metrics import evaluate_preds
 from ..run import Run
 from ..utils import Color
@@ -22,7 +22,7 @@ class Eval(Run):
     def __post_init__(self):
         # Set our output directory before super().execute() does
         if not self.out_dir:
-            root = elk_reporter_dir() / self.source
+            root = ccs_reporter_dir() / self.source
             self.out_dir = root / "transfer" / "+".join(self.data.datasets)
 
     def execute(self, highlight_color: Color = "cyan"):
@@ -36,7 +36,7 @@ class Eval(Run):
         device = self.get_device(devices, world_size)
         val_output = self.prepare_data(device, layer, "val")
 
-        experiment_dir = elk_reporter_dir() / self.source
+        experiment_dir = ccs_reporter_dir() / self.source
 
         reporter_path = experiment_dir / "reporters" / f"layer_{layer}.pt"
         reporter = torch.load(reporter_path, map_location=device)

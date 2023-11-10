@@ -3,8 +3,8 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "eleuther-elk"
-description = "Keeping language models honest by directly eliciting knowledge encoded in their activations"
+name = "eleuther-ccs"
+description = "Unsupervised methods of eliciting latent knowledge related to Contrast Consistent Search (CCS)"
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = ["nlp", "interpretability", "language-models", "explainable-ai"]
@@ -12,6 +12,8 @@ license = { text = "MIT License" }
 dependencies = [
     # Allows us to use device_map in from_pretrained. Also needed for 8bit
     "accelerate",
+    # Already a dependency of datasets, but newer versions introduce breaking changes
+    "pyarrow==12.0.0",
     # For pseudolabel and prompt normalization. We're picky about the version because
     # the package isn't guaranteed to be stable yet.
     "concept-erasure==0.1.0",
@@ -56,20 +58,20 @@ dev = [
 ]
 
 [project.scripts]
-elk = "elk.__main__:run"
+ccs = "ccs.__main__:run"
 
 [tool.pyright]
-include = ["elk*"]
+include = ["ccs*"]
 reportPrivateImportUsage = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.setuptools.package-data]
-elk = ["*.json", "*.yaml"]
+ccs = ["*.json", "*.yaml"]
 
 [tool.setuptools.packages.find]
-include = ["elk"]
+include = ["ccs"]
 
 [tool.ruff]
 # Enable pycodestyle (`E`), Pyflakes (`F`), and isort (`I`) codes

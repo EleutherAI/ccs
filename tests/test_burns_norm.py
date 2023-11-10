@@ -1,7 +1,7 @@
 import torch
 from torch import Tensor
 
-from elk.training.burns_norm import BurnsNorm
+from ccs.training.burns_norm import BurnsNorm
 
 
 def correct_but_slow_normalization(x_all: Tensor, scale=True) -> Tensor:

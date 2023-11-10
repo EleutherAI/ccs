@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pandas as pd
 
-from elk import Extract
-from elk.evaluation import Eval
-from elk.training import CcsConfig, EigenFitterConfig
-from elk.training.train import Elicit
+from ccs import Extract
+from ccs.evaluation import Eval
+from ccs.training import CcsConfig, EigenFitterConfig
+from ccs.training.train import Elicit
 
 EVAL_EXPECTED_FILES = [
     "cfg.yaml",

@@ -3,8 +3,8 @@ from typing import Literal
 
 import pytest
 
-from elk.extraction import Extract, load_prompts
-from elk.promptsource.templates import DatasetTemplates
+from ccs.extraction import Extract, load_prompts
+from ccs.promptsource.templates import DatasetTemplates
 
 
 @pytest.mark.filterwarnings("ignore:Unable to find a decoding function")

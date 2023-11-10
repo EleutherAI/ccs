@@ -1,13 +1,13 @@
-"""Main entry point for `elk`."""
+"""Main entry point for `ccs`."""
 
 from dataclasses import dataclass
 
 from simple_parsing import ArgumentParser
 
-from elk.evaluation.evaluate import Eval
-from elk.plotting.command import Plot
-from elk.training.sweep import Sweep
-from elk.training.train import Elicit
+from ccs.evaluation.evaluate import Eval
+from ccs.plotting.command import Plot
+from ccs.training.sweep import Sweep
+from ccs.training.train import Elicit
 
 
 @dataclass

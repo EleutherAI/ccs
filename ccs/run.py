@@ -20,7 +20,7 @@ from tqdm import tqdm
 from .debug_logging import save_debug_log
 from .extraction import Extract, extract
 from .extraction.dataset_name import DatasetDictWithName
-from .files import elk_reporter_dir, memorably_named_dir
+from .files import ccs_reporter_dir, memorably_named_dir
 from .utils import (
     Color,
     assert_type,
@@ -72,9 +72,9 @@ class Run(ABC, Serializable):
 
         if self.out_dir is None:
             # Save in a memorably-named directory inside of
-            # ELK_REPORTER_DIR/<model_name>/<dataset_name>
+            # CCS_REPORTER_DIR/<model_name>/<dataset_name>
             ds_name = "+".join(self.data.datasets)
-            root = elk_reporter_dir() / self.data.model / ds_name
+            root = ccs_reporter_dir() / self.data.model / ds_name
 
             self.out_dir = memorably_named_dir(root)
 
