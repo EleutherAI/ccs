@@ -43,7 +43,7 @@ class CcsConfig(FitterConfig):
     function 1.0*consistency_squared + 0.5*prompt_var.
     """
     loss_dict: dict[str, float] = field(default_factory=dict, init=False)
-    norm: Literal["leace", "burns"] = "leace"
+    norm: Literal["leace", "burns", "meanonly"] = "meanonly"
     num_layers: int = 1
     """The number of layers in the MLP."""
     pre_ln: bool = False
@@ -209,6 +209,8 @@ class CcsReporter(nn.Module, PlattMixin):
 
         if self.config.norm == "burns":
             self.norm = BurnsNorm()
+        elif self.config.norm == "meanonly":
+            self.norm = BurnsNorm(scale=False)
         else:
             fitter = LeaceFitter(d, 2 * v, dtype=x_neg.dtype, device=x_neg.device)
             fitter.update(
