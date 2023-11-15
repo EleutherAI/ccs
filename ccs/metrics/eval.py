@@ -2,6 +2,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Literal
 
 import torch
+import torch.nn.functional as F
 from einops import repeat
 from torch import Tensor
 
@@ -47,6 +48,29 @@ class EvalResult:
             **cal_dict,
             f"{prefix}cal_thresh": self.cal_thresh,
         }
+
+
+def get_logprobs(
+    y_logits: Tensor, ensembling: Literal["none", "partial", "full"] = "none"
+) -> Tensor:
+    """
+    Get the class probabilities from a tensor of logits.
+    Args:
+        y_logits: Predicted log-odds of the positive class, tensor of shape (n, v, c).
+    Returns:
+        Tensor of logprobs: If ensemble is "none" or "partial", tensor of shape (n, v).
+            If ensemble is "full", tensor of shape (n,).
+    """
+    assert y_logits.shape[-1] == 2, "Logits must be binary."
+    if ensembling == "full":
+        y_logits = y_logits.mean(dim=1)
+
+    y_logits = (
+        y_logits[..., 1]
+        if ensembling == "none"
+        else y_logits[..., 1] - y_logits[..., 0]
+    )
+    return F.logsigmoid(y_logits)
 
 
 def evaluate_preds(

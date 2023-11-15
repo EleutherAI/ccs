@@ -12,7 +12,7 @@ from simple_parsing import subgroups
 from simple_parsing.helpers.serialization import save
 
 from ..extraction import Extract
-from ..metrics import evaluate_preds, to_one_hot
+from ..metrics import evaluate_preds, get_logprobs, to_one_hot
 from ..run import Run
 from ..training.supervised import train_supervised
 from ..utils.typing import assert_type
@@ -26,7 +26,7 @@ class Elicit(Run):
     """Full specification of a reporter training run."""
 
     net: FitterConfig = subgroups(
-        {"ccs": CcsConfig, "eigen": EigenFitterConfig}, default="eigen"  # type: ignore
+        {"ccs": CcsConfig, "eigen": EigenFitterConfig}, default="ccs"  # type: ignore
     )
     """Config for building the reporter network."""
 
@@ -63,7 +63,7 @@ class Elicit(Run):
         layer: int,
         devices: list[str],
         world_size: int,
-    ) -> dict[str, pd.DataFrame]:
+    ) -> tuple[dict[str, pd.DataFrame], dict]:
         """Train a single reporter on a single layer."""
 
         self.make_reproducible(seed=self.net.seed + layer)
@@ -72,16 +72,16 @@ class Elicit(Run):
         train_dict = self.prepare_data(device, layer, "train")
         val_dict = self.prepare_data(device, layer, "val")
 
-        (first_train_h, train_gt, _), *rest = train_dict.values()
-        (_, v, k, d) = first_train_h.shape
-        if not all(other_h.shape[-1] == d for other_h, _, _ in rest):
+        first_train_data, *rest = train_dict.values()
+        (_, v, k, d) = first_train_data.hiddens.shape
+        if not all(other.hiddens.shape[-1] == d for other in rest):
             raise ValueError("All datasets must have the same hidden state size")
 
         # For a while we did support datasets with different numbers of classes, but
         # we reverted this once we switched to ConceptEraser. There are a few options
         # for re-enabling it in the future but they are somewhat complex and it's not
         # clear that it's worth it.
-        if not all(other_h.shape[-2] == k for other_h, _, _ in rest):
+        if not all(other.hiddens.shape[-2] == k for other in rest):
             raise ValueError("All datasets must have the same number of classes")
 
         reporter_dir, lr_dir = self.create_models_dir(assert_type(Path, self.out_dir))
@@ -91,9 +91,9 @@ class Elicit(Run):
             assert len(train_dict) == 1, "CCS only supports single-task training"
 
             reporter = CcsReporter(self.net, d, device=device, num_variants=v)
-            train_loss = reporter.fit(first_train_h)
-            labels = repeat(to_one_hot(train_gt, k), "n k -> n v k", v=v)
-            reporter.platt_scale(labels, first_train_h)
+            train_loss = reporter.fit(first_train_data.hiddens)
+            labels = repeat(to_one_hot(first_train_data.labels, k), "n k -> n v k", v=v)
+            reporter.platt_scale(labels, first_train_data.hiddens)
 
         elif isinstance(self.net, EigenFitterConfig):
             fitter = EigenFitter(
@@ -101,16 +101,20 @@ class Elicit(Run):
             )
 
             hidden_list, label_list = [], []
-            for ds_name, (train_h, train_gt, _) in train_dict.items():
-                (_, v, _, _) = train_h.shape
+            for ds_name, train_data in train_dict.items():
+                (_, v, _, _) = train_data.hiddens.shape
 
                 # Datasets can have different numbers of variants, so we need to
                 # flatten them here before concatenating
-                hidden_list.append(rearrange(train_h, "n v k d -> (n v k) d"))
-                label_list.append(
-                    to_one_hot(repeat(train_gt, "n -> (n v)", v=v), k).flatten()
+                hidden_list.append(
+                    rearrange(train_data.hiddens, "n v k d -> (n v k) d")
                 )
-                fitter.update(train_h)
+                label_list.append(
+                    to_one_hot(
+                        repeat(train_data.labels, "n -> (n v)", v=v), k
+                    ).flatten()
+                )
+                fitter.update(train_data.hiddens)
 
             reporter = fitter.fit_streaming()
             reporter.platt_scale(
@@ -135,59 +139,108 @@ class Elicit(Run):
         else:
             lr_models = []
 
-        row_bufs = defaultdict(list)
-        for ds_name in val_dict:
-            val_h, val_gt, val_lm_preds = val_dict[ds_name]
-            train_h, train_gt, train_lm_preds = train_dict[ds_name]
-            meta = {"dataset": ds_name, "layer": layer}
+        with torch.no_grad():
+            out_logprobs = defaultdict(dict)
+            row_bufs = defaultdict(list)
+            for ds_name in val_dict:
+                val, train = val_dict[ds_name], train_dict[ds_name]
+                meta = {"dataset": ds_name, "layer": layer}
 
-            val_credences = reporter(val_h)
-            train_credences = reporter(train_h)
-            for mode in ("none", "partial", "full"):
-                row_bufs["eval"].append(
-                    {
-                        **meta,
-                        "ensembling": mode,
-                        **evaluate_preds(val_gt, val_credences, mode).to_dict(),
-                        "train_loss": train_loss,
-                    }
-                )
+                if self.save_logprobs:
+                    out_logprobs[ds_name] = dict(
+                        row_ids=val.row_ids.cpu(),
+                        variant_ids=val.variant_ids,
+                        texts=val.texts,
+                        labels=val.labels.cpu(),
+                        lm=dict(),
+                        lr=dict(),
+                        reporter=dict(),
+                    )
 
-                row_bufs["train_eval"].append(
-                    {
-                        **meta,
-                        "ensembling": mode,
-                        **evaluate_preds(train_gt, train_credences, mode).to_dict(),
-                        "train_loss": train_loss,
-                    }
-                )
-
-                if val_lm_preds is not None:
-                    row_bufs["lm_eval"].append(
+                val_credences = reporter(val.hiddens)
+                train_credences = reporter(train.hiddens)
+                for mode in ("none", "partial", "full"):
+                    row_bufs["eval"].append(
                         {
                             **meta,
                             "ensembling": mode,
-                            **evaluate_preds(val_gt, val_lm_preds, mode).to_dict(),
+                            **evaluate_preds(val.labels, val_credences, mode).to_dict(),
+                            "train_loss": train_loss,
                         }
                     )
+                    if self.save_logprobs:
+                        out_logprobs[ds_name]["reporter"][mode] = get_logprobs(
+                            val_credences, mode
+                        ).cpu()
 
-                if train_lm_preds is not None:
-                    row_bufs["train_lm_eval"].append(
+                    row_bufs["train_eval"].append(
                         {
                             **meta,
                             "ensembling": mode,
-                            **evaluate_preds(train_gt, train_lm_preds, mode).to_dict(),
+                            **evaluate_preds(
+                                train.labels, train_credences, mode
+                            ).to_dict(),
+                            "train_loss": train_loss,
                         }
                     )
 
-                for i, model in enumerate(lr_models):
-                    row_bufs["lr_eval"].append(
-                        {
-                            **meta,
-                            "ensembling": mode,
-                            "inlp_iter": i,
-                            **evaluate_preds(val_gt, model(val_h), mode).to_dict(),
-                        }
-                    )
+                    if val.lm_preds is not None:
+                        row_bufs["lm_eval"].append(
+                            {
+                                **meta,
+                                "ensembling": mode,
+                                **evaluate_preds(
+                                    val.labels, val.lm_preds, mode
+                                ).to_dict(),
+                            }
+                        )
+                        if self.save_logprobs:
+                            out_logprobs[ds_name]["lm"][mode] = get_logprobs(
+                                val.lm_preds, mode
+                            ).cpu()
 
-        return {k: pd.DataFrame(v) for k, v in row_bufs.items()}
+                    if train.lm_preds is not None:
+                        row_bufs["train_lm_eval"].append(
+                            {
+                                **meta,
+                                "ensembling": mode,
+                                **evaluate_preds(
+                                    train.labels, train.lm_preds, mode
+                                ).to_dict(),
+                            }
+                        )
+
+                    if self.save_logprobs:
+                        out_logprobs[ds_name]["lr"][mode] = dict()
+
+                    for i, model in enumerate(lr_models):
+                        model.eval()
+                        val_credences = model(val.hiddens)
+                        train_credences = model(train.hiddens)
+
+                        if self.save_logprobs:
+                            out_logprobs[ds_name]["lr"][mode][i] = get_logprobs(
+                                val_credences, mode
+                            ).cpu()
+                        row_bufs["lr_eval"].append(
+                            {
+                                **meta,
+                                "ensembling": mode,
+                                "inlp_iter": i,
+                                **evaluate_preds(
+                                    val.labels, val_credences, mode
+                                ).to_dict(),
+                            }
+                        )
+                        row_bufs["train_lr_eval"].append(
+                            {
+                                **meta,
+                                "ensembling": mode,
+                                "inlp_iter": i,
+                                **evaluate_preds(
+                                    train.labels, train_credences, mode
+                                ).to_dict(),
+                            }
+                        )
+
+        return {k: pd.DataFrame(v) for k, v in row_bufs.items()}, out_logprobs
