@@ -1,0 +1,16 @@
+dataset: None
+templates:
+  41e13d03004a458abeab1e5c22f83e68: !Template
+    answer_choices:  False |||  True
+    id: 41e13d03004a458abeab1e5c22f83e68
+    jinja: 'Grader: {{ character }}
+
+{{ summand1 }} + {{ summand2 }} = {{ sum }}
+
+Score: ||| {{answer_choices[label]}}'
+    metadata: !TemplateMetadata
+      languages:
+      - en
+      metrics:
+      - Accuracy
+    name: "grader_first"

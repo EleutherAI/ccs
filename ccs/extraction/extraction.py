@@ -264,12 +264,14 @@ def extract_hiddens(
                 if is_enc_dec:
                     answer = labels = assert_type(Tensor, encoding.labels)
                 else:
-                    a_id = tokenizer.encode(" " + choice["answer"], add_special_tokens=False)
+                    a_id = tokenizer.encode(
+                        " " + choice["answer"], add_special_tokens=False
+                    )
 
                     # the Llama tokenizer splits off leading spaces
                     if tokenizer.decode(a_id[0]).strip() == "":
                         a_id_without_space = tokenizer.encode(
-                            choice, add_special_tokens=False
+                            choice["answer"], add_special_tokens=False
                         )
                         assert a_id_without_space == a_id[1:]
                         a_id = a_id_without_space
@@ -303,7 +305,7 @@ def extract_hiddens(
                     # probs near 1 will be somewhat imprecise
                     # log(p/(1-p)) = log(p) - log(1-p) = logp - log(1 - exp(logp))
                     lm_log_odds[i, j] = logprob - torch.log1p(-logprob.exp())
-                    
+
                 hiddens = (
                     outputs.get("decoder_hidden_states") or outputs["hidden_states"]
                 )
