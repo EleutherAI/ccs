@@ -64,15 +64,15 @@ bibliography: paper.bib
 
 # Summary
 
-`elk` is a library designed to elicit latent knowledge ([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/`) [@author:elk]) from language models. It includes implementations of both the original and an enhanced version of the CSS method, as well as an approach based on the CRC method [@author:burns]. Designed for researchers, `elk` offers features such as multi-GPU support, integration with Huggingface, and continuous improvement by a dedicated group of people. The Eleuther AI Discord's `elk` channel provides a platform for collaboration and discussion related to the library and associated research.
+`ccs` is a library designed to elicit latent knowledge ([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/`) [@author:elk]) from language models. It includes implementations of both the original and an enhanced version of the CSS method, as well as an approach based on the CRC method [@author:burns]. Designed for researchers, `ccs` offers features such as multi-GPU support, integration with Huggingface, and continuous improvement by a dedicated group of people. The Eleuther AI Discord's `elk` channel provides a platform for collaboration and discussion related to the library and associated research.
 
 # Statement of need
 
 Language models are proficient at predicting successive tokens in a sequence of text. However, they often inadvertently mirror human errors and misconceptions, even when equipped with the capability to "know better." This behavior becomes particularly concerning when models are trained to generate text that is highly rated by human evaluators, leading to the potential output of erroneous statements that may go undetected. Our solution is to directly elicit latent knowledge (([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/edit`) [@author:elk]) from within the activations of a language model to mitigate this challenge.
 
-`elk` is a specialized library developed to provide both the original and an enhanced version of the CSS methodology. Described in the paper "Discovering Latent Knowledge in Language Models Without Supervision" by Burns et al. [@author:burns]. In addition, we have implemented an approach, called VINC, based on the Contrastive Representation Clustering (CRC) method from the same paper.
+`ccs` is a specialized library developed to provide both the original and an enhanced version of the CSS methodology. Described in the paper "Discovering Latent Knowledge in Language Models Without Supervision" by Burns et al. [@author:burns]. In addition, we have implemented an approach, called VINC, based on the Contrastive Representation Clustering (CRC) method from the same paper.
 
-`elk` serves as a tool for those seeking to investigate the veracity of model output and explore the underlying beliefs embedded within the model. The library offers:
+`ccs` serves as a tool for those seeking to investigate the veracity of model output and explore the underlying beliefs embedded within the model. The library offers:
 
 - Multi-GPU Support: Efficient extraction, training, and evaluation through parallel processing.
 - Integration with Huggingface: Easy utilization of models and datasets from a popular source.
