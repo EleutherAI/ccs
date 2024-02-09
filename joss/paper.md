@@ -1,5 +1,5 @@
 ---
-title: 'elk: A Python package to elicit latent knowledge from LLMs'
+title: 'CCS-Lib: A Python package to elicit latent knowledge from LLMs'
 tags:
   - python
   - machine leaarning
