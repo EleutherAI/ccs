@@ -46,7 +46,7 @@ authors: # sorted by num of commits
 affiliations:
  - name: EleutherAI
    index: 1
- - name: NotodAI Research
+ - name: Cadenza Labs
    index: 2
  - name: FZI Research Center for Information Technology
    index: 3
