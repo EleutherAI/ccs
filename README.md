@@ -5,8 +5,7 @@
 Because language models are trained to predict the next token in naturally occurring text, they often reproduce common
 human errors and misconceptions, even when they "know better" in some sense. More worryingly, when models are trained to
 generate text that's rated highly by humans, they may learn to output false statements that human evaluators can't
-detect. We aim to circumvent this issue by directly [eliciting latent knowledge
-](https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/edit) (ELK) inside the activations
+detect. We aim to circumvent this issue by directly [eliciting latent knowledge](https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/edit) (ELK) inside the activations
 of a language model.
 
 Specifically, we're building on the **Contrastive Representation Clustering** (CRC) method described in the
