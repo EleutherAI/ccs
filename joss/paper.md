@@ -9,15 +9,15 @@ tags:
 authors: # sorted by num of commits
   - name: Walter Laurito
     corresponding: true
-    affiliation: "3"
+    affiliation: 3
   - name: Nora Belrose
     affiliation: 1 
+  - name: Alex Mallen
+    affiliation: "1, 4"
   - name: Kay Kozaronek
     affiliation: 2
   - name: Fabien Roger
     affiliation: 4
-  - name: Alex Mallen
-    affiliation: "1, 7"
   - name: Christy Koh
     affiliation: 5
   - name: James Chua
@@ -33,13 +33,13 @@ authors: # sorted by num of commits
   - name: Kyle O'Brien
     affiliation: "1, 6"
   - name: Augustas Macijauskas
-    affiliation: 8
+    affiliation: 7
   - name: Eric Mungai Kinuthia
     affiliation: 1
   - name: Marius PL
     affiliation: 2
   - name: Waree Sethapun
-    affiliation: 9
+    affiliation: 8
   - name: Kaarel Hänni
     affiliation: 2
 
@@ -56,12 +56,10 @@ affiliations:
    index: 5
  - name: Microsoft
    index: 6
- - name: University of Washington
-   index: 7
  - name: CAML Lab, University of Cambridge
-   index: 8
+   index: 7
  - name: Princeton University
-   index: 9
+   index: 8
 date: 11 08 2023
 bibliography: paper.bib
 
