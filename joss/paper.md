@@ -79,6 +79,8 @@ These considerations have led to the development of unsupervised probing methods
 
 Nonetheless, current unsupervised probing methods still face challenges [@farquhar2023]. These issues underscore the need for tools that enable researchers to easily train, investigate, and compare probes while analyzing the internal representations of language models. In this context, one aim of our ccs library is to provide a testbed that allows researchers to experiment with existing unsupervised probing methods—and compare them with their supervised counterparts—to elicit latent knowledge (ELK [@christiano2021]) from within the activations of a language model.
 
+See Section [Example Usage](#Example Usage: Comparing unsupervised and supervised probes) for a simple example usage of the library.
+
 # Implementation
 
 The `ccs` library is developed to provide both the original and an enhanced version of the Contrast-Consistent Search (CCS) method described in the paper "Discovering Latent Knowledge in Language Models Without Supervision" by @burns2022.
@@ -139,7 +141,7 @@ ccs sweep --models gpt2-{medium,large,xl} --datasets imdb amazon_polarity --add_
 ```
 Additional details can be found in the of the library [README](https://github.com/EleutherAI/ccs/blob/main/README.md).
 
-# Similar tools
+# State of the field
 
 Most available code is often tailored to demonstrate a paper's specific methods and results rather than being user-friendly for researchers [@burns2022, @marks2023geometry, @farquhar2023]. In contrast, our work is explicitly engineered to simplify the testing, comparison, and enhancement of unsupervised methods. Consequently, as mentioned above, it offers the following features:
 
