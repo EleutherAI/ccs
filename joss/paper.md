@@ -10,8 +10,10 @@ authors: # sorted by num of commits
   - name: Walter Laurito
     corresponding: true
     affiliation: 3
+    equal-contrib: true
   - name: Nora Belrose
     affiliation: 1 
+    equal-contrib: true
   - name: Alex Mallen
     affiliation: "1, 4"
   - name: Kay Kozaronek
