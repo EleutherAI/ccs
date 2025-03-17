@@ -21,7 +21,7 @@ dependencies = [
     "datasets>=2.9.0",
     "einops",
     # Introduced numpy.typing module
-    "numpy>=1.20.0",
+    "numpy>=1.20.0, <2.0.0",
     # For logging. Indirectly required by datasets, but just to be safe we specify it here.
     "pandas",
     # Basically any version should work as long as it supports the user's CUDA version
