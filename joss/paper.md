@@ -85,7 +85,7 @@ See Section [Example Usage](#Example Usage: Comparing unsupervised and supervise
 
 # Implementation
 
-The `ccs` library is developed to provide both the original and an enhanced version of the CCS method described in the paper "Discovering Latent Knowledge in Language Models Without Supervision" by @burns2022.
+The `ccs` library is developed to provide both the original and an enhanced version of the Contrast-Consistent Search (CCS) method described in the paper "Discovering Latent Knowledge in Language Models Without Supervision" by @burns2022.
 
 Our enhanced version of CCS uses the LBFGS optimizer instead of Adam, which speeds up the training process. Furthermore, it uses learnable Platt scaling parameters to avoid the problem of sign ambiguity from the original implementation.
 
