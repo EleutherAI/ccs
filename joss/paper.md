@@ -69,7 +69,7 @@ bibliography: paper.bib
 
 # Summary
 
-`ccs` is a library designed to elicit latent knowledge ([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/`) [@christiano2021]) from language models. It includes implementations of both the original and an enhanced version of the CSS method and an approach based on Contrastive Representation Clustering-Top Principal Component (CRC-TPC) [@burns2022], called VINC. Designed for researchers, the `ccs` library offers features like multi-GPU support, integration with Huggingface and the training of supervised probes for comparisons.
+`ccs` is a library designed to elicit latent knowledge ([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/`) [@christiano2021]) from language models. It includes implementations of both the original and an enhanced version of the CSS method and an approach based on Contrastive Representation Clustering-Top Principal Component (CRC-TPC) [@burns2022], called VINC. Designed for researchers, the `ccs` library offers features like multi-GPU support, integration with Huggingface and the training of unsupervised and supervised probes for comparisons.
 
 # Statement of need
 
