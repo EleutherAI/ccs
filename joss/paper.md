@@ -153,6 +153,7 @@ Most available code is often tailored to demonstrate a paper's specific methods 
 - Training supervised probes with logistic regression for comparisons by default
 
 # Acknowledgements
+
 We would like to thank [EleutherAI](https://www.eleuther.ai/), [SERI MATS](https://www.serimats.org/) for supporting our work and [Long-Term Future Fund (LTFF)](https://funds.effectivealtruism.org/funds/far-future).
 
 # References
