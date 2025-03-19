@@ -77,7 +77,7 @@ The widespread adoption of language models in real-world applications presents s
 
 Recent studies indicate that it's possible to extract simulated internal beliefs or 'knowledge' from language model activations [@li2022emergent; @gurnee2023language; @azaria2023internal; @bubeck2023sparks]. While supervised probing techniques can be used for this purpose [@alain2016understanding; @marks2023geometry], they rely on labels that may be compromised by human biases or limitations in human knowledge. In some cases, it's crucial to avoid human labels altogether to allow distinguishing between a model's true knowledge and its representation of human beliefs.
 
-These considerations have led to the development of unsupervised probing methods, such as Contrast-Consistent Search (CCS) [@burns]. These techniques aim to extract knowledge embedded in language models without relying on ground truth labels [@zou2023representation; @burns2022]. Such approaches offer a promising direction for uncovering the latent knowledge within language models while mitigating the influence of human biases and limitations. 
+These considerations have led to the development of unsupervised probing methods, such as Contrast-Consistent Search (CCS) [@burns2022]. These techniques aim to extract knowledge embedded in language models without relying on ground truth labels [@zou2023representation; @burns2022]. Such approaches offer a promising direction for uncovering the latent knowledge within language models while mitigating the influence of human biases and limitations. 
 
 Nonetheless, current unsupervised probing methods still face challenges [@farquhar2023]. These issues underscore the need for tools that enable researchers to easily train, investigate, and compare probes while analyzing the internal representations of language models. In this context, one aim of our ccs library is to provide a testbed that allows researchers to experiment with existing unsupervised probing methods—and compare them with their supervised counterparts—to elicit latent knowledge (ELK [@christiano2021]) from within the activations of a language model.
 
@@ -131,7 +131,6 @@ Once the run is complete, the following files are generated for analysis:
   - `results/eval.csv`: Evaluation results for the reporters
   - `results/train_eval.csv`: Evaluation results for the reporter on the training set
   - `results/lr_eval.csv`: Evaluation results for the logistic regression models
-  - `results/reports/`: Folder containing the reports for each layer
   - `results/sweeps/`: Folder containing the sweeps for the run
   - `results/plots/`: Folder containing the plots for the run
   - `results/fingerprints.yaml`: Metadata files that store unique identifiers (fingerprints) for different dataset splits
