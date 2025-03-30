@@ -69,7 +69,7 @@ bibliography: paper.bib
 
 # Summary
 
-`ccs` is a library designed to elicit latent knowledge ([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/`) [@christiano2021]) from language models. It includes implementations of both the original and an enhanced version of the Contrast-Consistent Search (CCS) method and an approach based on Contrastive Representation Clustering-Top Principal Component (CRC-TPC) [@burns2022], called VINC. Designed for researchers, the `ccs` library offers features like multi-GPU support, integration with Huggingface and the training of supervised probes for comparisons.
+`ccs` is a library designed to elicit latent knowledge ([elk](`https://docs.google.com/document/d/1WwsnJQstPq91_Yh-Ch2XRL8H_EpsnjrC1dwZXR37PC8/`) [@christiano2021]) from language models. It includes implementations of both the original and an enhanced version of the Contrast-Consistent Search (CCS) method and an approach based on Contrastive Representation Clustering-Top Principal Component (CRC-TPC) [@burns2022], called VINC. Designed for researchers, the `ccs` library offers features like multi-GPU support, integration with Hugging Face and the training of supervised probes for comparisons.
 
 # Statement of need
 
@@ -79,9 +79,9 @@ Recent studies indicate that it's possible to extract simulated internal beliefs
 
 These considerations have led to the development of unsupervised probing methods, such as Contrast-Consistent Search (CCS) [@burns2022]. These techniques aim to extract knowledge embedded in language models without relying on ground truth labels [@zou2023representation; @burns2022]. Such approaches offer a promising direction for uncovering the latent knowledge within language models while mitigating the influence of human biases and limitations. 
 
-Nonetheless, current unsupervised probing methods still face challenges [@farquhar2023; @levinstein2024; @laurito2024]. These issues underscore the need for tools that enable researchers to easily train, investigate, and compare probes while analyzing the internal representations of language models. In this context, one aim of our ccs library is to provide a testbed that allows researchers to experiment with existing unsupervised probing methods—and compare them with their supervised counterparts—to elicit latent knowledge (ELK [@christiano2021]) from within the activations of a language model.
+Nonetheless, current unsupervised probing methods still face challenges [@farquhar2023; @levinstein2024; @laurito2024]. These issues underscore the need for tools that enable researchers to easily train, investigate, and compare probes while analyzing the internal representations of language models. In this context, one aim of our `ccs` library is to provide a testbed that allows researchers to experiment with existing unsupervised probing methods — and compare them with their supervised counterparts — to elicit latent knowledge (ELK [@christiano2021]) from within the activations of a language model.
 
-See Section [Example Usage](#Example Usage: Comparing unsupervised and supervised probes) for a simple example usage of the library.
+Refer to the *Example Usage* section for a demonstration of how to use the library.
 
 # Implementation
 
@@ -97,23 +97,23 @@ Finally, we provide a method to train supervised probes using logistic regressio
 
 - A clean implementation of the enhanced and original version of CCS
 - Multi-GPU Support: Efficient extraction, training, and evaluation through parallel processing
-- Integration with Huggingface: Easy utilization of models and datasets from a popular source
+- Integration with Hugging Face: Easy utilization of models and datasets from a popular source
 - VINC, an alternative to CCS
 - Training supervised probes with logistic regression for comparisons
 
 For collaboration, discussion, and support, the [Eleuther AI Discord's elk channel](https://discord.com/channels/729741769192767510/1070194752785489991) provides a platform for engaging with others interested in the library or related research projects.
 
 
-# Example Usage: Comparing unsupervised and supervised probes
+# Example usage - Comparing unsupervised and supervised probes
 
 As mentioned above, one aim of this library is to provide a testbed for experimentation with unsupervised probing methods and to compare them with their supervised counterparts. We provide a simple example of how to use the library to compare the performance of unsupervised and supervised probes.
 
 First install the package with `pip install -e .` in the root directory. 
 This should install all the necessary dependencies.
 
-To fit reporters for the HuggingFace model `model` and dataset `dataset`, run:
+To fit reporters for the Hugging Face model `model` and dataset `dataset`, run:
 
-```bash
+```bash 
 ccs elicit microsoft/deberta-v2-xxlarge-mnli imdb
 ```
 
@@ -135,20 +135,20 @@ Once the run is complete, the following files are generated for analysis:
   - `results/plots/`: Folder containing the plots for the run
   - `results/fingerprints.yaml`: Metadata files that store unique identifiers (fingerprints) for different dataset splits
 
-This makes it easy to compare the performance of for a given model and dataset. Now, if you want to run a sweep to compare the performance of different models and datasets, you can use the following command:
+Now, if you want to run a sweep to compare the performance of different models and datasets, you can use the following command:
 
 ```bash
 ccs sweep --models gpt2-{medium,large,xl} --datasets imdb amazon_polarity --add_pooled
 ```
-Additional details can be found in the of the library [README](https://github.com/EleutherAI/ccs/blob/main/README.md).
+Additional details are available in the library's [README](https://github.com/EleutherAI/ccs/blob/main/README.md).
 
 # State of the field
 
-Most available code is often tailored to demonstrate a paper's specific methods and results rather than being user-friendly for researchers [@burns2022, @marks2023geometry, @farquhar2023]. In contrast, our work is explicitly engineered to simplify the testing, comparison, and enhancement of unsupervised methods. Consequently, as mentioned above, it offers the following features:
+Most available code is often tailored to demonstrate a paper's specific methods and results rather than being user-friendly for researchers [@burns2022; @marks2023geometry; @farquhar2023]. In contrast, our work is explicitly engineered to simplify the testing, comparison, and enhancement of unsupervised methods. Consequently, as mentioned above, it offers the following features:
 
 - A clean implementation of the enhanced and original version of CCS
 - Multi-GPU Support: Efficient extraction, training, and evaluation through parallel processing
-- Integration with Huggingface: Easy utilization of models and datasets from a popular source
+- Integration with Hugging Face: Easy utilization of models and datasets from a popular source
 - The method VINC, an alternative to CCS
 - Training supervised probes with logistic regression for comparisons by default
 
