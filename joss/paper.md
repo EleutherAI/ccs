@@ -79,13 +79,13 @@ Recent studies indicate that it's possible to extract simulated internal beliefs
 
 These considerations have led to the development of unsupervised probing methods, such as Contrast-Consistent Search (CCS) [@burns2022]. These techniques aim to extract knowledge embedded in language models without relying on ground truth labels [@zou2023representation; @burns2022]. Such approaches offer a promising direction for uncovering the latent knowledge within language models while mitigating the influence of human biases and limitations. 
 
-Nonetheless, current unsupervised probing methods still face challenges [@farquhar2023; @levinstein2024; @laurito2024]. These issues underscore the need for tools that enable researchers to easily train, investigate, and compare probes while analyzing the internal representations of language models. In this context, one aim of our CCS-Lib is to provide a testbed that allows researchers to experiment with existing unsupervised probing methods — and compare them with their supervised counterparts — to elicit latent knowledge (ELK [@christiano2021]) from within the activations of a language model.
+Nonetheless, current unsupervised probing methods still face challenges [@farquhar2023; @levinstein2024; @laurito2024]. These issues underscore the need for tools that enable researchers to easily train, investigate, and compare probes while analyzing the internal representations of language models. In this context, one aim of our CCS-Lib is to provide a testbed that allows researchers to experiment with existing unsupervised probing methods — and compare them with their supervised counterparts — to elicit latent knowledge from within the activations of a language model.
 
 Refer to the *Example Usage* section for a demonstration of how to use the library.
 
 # Implementation
 
-The CCS-Lib is developed to provide both the original and an enhanced version of the Contrast-Consistent Search (CCS) method described in the paper "Discovering Latent Knowledge in Language Models Without Supervision" by @burns2022.
+The CCS-Lib is developed to provide both the original and an enhanced version of the Contrast-Consistent Search (CCS) method described in @burns2022.
 
 Our enhanced version of CCS uses the Limited-memory BFGS (LBFGS) optimizer instead of Adam, which speeds up the training process. Furthermore, it uses learnable Platt scaling parameters to avoid the problem of sign ambiguity from the original implementation.
 
